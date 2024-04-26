@@ -1,0 +1,241 @@
+<!-- 
+Nama    : Oktaviana Sadama Nur Azizah
+NIM     : 24060121130060
+Lab     : PBP A1 
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Form Tambah Data Produk</title>
+        <script>
+            // Fungsi Validasi Form
+            function validateForm() {
+                // validasi nama produk tidak boleh kosong dengan panjang 5 <= karakter <= 30
+                const nama = document.forms["form_addProduk"]["nama"].value;
+                if(nama == "") {
+                    alert("Nama produk tidak boleh kosong!");
+                    document.forms["form_addProduk"]["nama"].focus();
+                    return false;
+                }
+                if(nama.length < 5 || nama.length > 30) {
+                    alert("Nama produk harus diisi minimal 5 karakter, maksimal 30 karakter!");
+                    document.forms["form_addProduk"]["nama"].focus();
+                    return false;
+                }
+
+                // validasi deskripsi tidak boleh kosong dengan panjang 5 <= karakter <= 100
+                const deskripsi = document.forms["form_addProduk"]["desc"].value;
+                if(deskripsi == "") {
+                    alert("Deskripsi tidak boleh kosong!");
+                    document.forms["form_addProduk"]["desc"].focus();
+                    return false;
+                }
+                if(deskripsi.length < 5 || deskripsi.length > 100) {
+                    alert("Deskripsi harus diisi minimal 5 karakter, maksimal 100 karakter!");
+                    document.forms["form_addProduk"]["desc"].focus();
+                    return false;
+                }
+
+                // validasi kategori tidak boleh kosong
+                if(document.forms["form_addProduk"]["kategori"].value == "") {
+                    alert("Pilih kategori!");
+                    document.forms["form_addProduk"]["kategori"].focus();
+                    return false;
+                }
+
+                // validasi sub kategori tidak boleh kosong
+                if(document.forms["form_addProduk"]["sub"].value == "") {
+                    alert("Pilih sub kategori!");
+                    document.forms["form_addProduk"]["sub"].focus();
+                    return false;
+                }
+
+                // validasi harga satuan tidak boleh kosong dan harus numerik
+                const hargaSatuan = document.forms["form_addProduk"]["hargaSatuan"].value;
+                if(hargaSatuan == "") {
+                    alert("Harga satuan tidak boleh kosong!");
+                    document.forms["form_addProduk"]["hargaSatuan"].focus();
+                    return false;
+                } 
+                if(isNaN(hargaSatuan)) {
+                    alert("Harga satuan harus diisi nilai numerik!");
+                    document.forms["form_addProduk"]["hargaSatuan"].focus();
+                    return false;
+                }
+
+                // validasi grosir
+                const grosir = document.forms["form_addProduk"]["grosir"].value;
+                if(grosir == "") {
+                    alert("Grosir harus dipilih!");
+                    document.forms["form_addProduk"]["grosir"].focus();
+                    return false;
+                }
+
+                // validasi harga grosir
+                if(grosir == "Ya") {
+                    const hargaGrosir = document.forms["form_addProduk"]["hargaGrosir"].value;
+                    if(hargaGrosir == "") {
+                        alert("Harga grosir tidak boleh kosong!");
+                        document.forms["form_addProduk"]["hargaGrosir"].focus();
+                        return false;
+                    } 
+                    if(isNaN(hargaGrosir)) {
+                        alert("Harga grosir harus diisi nilai numerik!");
+                        document.forms["form_addProduk"]["hargaGrosir"].focus();
+                        return false;
+                    }
+                }
+
+                // validasi jasa dengan minimal 3 pilihan
+                var jasa = document.forms["form_addProduk"]["jasa[]"];
+                var checkedCount = 0;
+                for(let i = 0; i < jasa.length; i++) {
+                    if(jasa[i].checked) {
+                        checkedCount++;
+                    }
+                }
+                if(checkedCount < 3) {
+                    alert("Minimal jasa kirim yang dipilih adalah 3!");
+                    return false;
+                }
+
+                //validasi captcha
+                if(document.forms["form_addProduk"]["captcha_input"].value !=
+                document.forms["form_addProduk"]["captcha_text"].value) {
+                    alert("Captcha tidak tepat!");
+                    return false;
+                }
+
+                alert("Pengisian form sukses!")
+                return true;
+            }
+
+            // Fungsi Sub Kategori
+            function get_subKategori() {
+                let kategori = document.forms["form_addProduk"]["kategori"].value;
+                if(kategori == "Baju") {
+                    document.getElementById("sub").innerHTML = 
+                    '<option value="">--Pilih Sub Kategori--</option>' +
+                    '<option value="Baju Pria">Baju Pria</option>' +
+                    '<option value="Baju Wanita">Baju Wanita</option>' +
+                    '<option value="Baju Anak">Baju Anak</option>';
+                }
+                if(kategori == "Elektronik") {
+                    document.getElementById("sub").innerHTML =
+                    '<option value="">--Pilih Sub Kategori--</option>' +
+                    '<option value="Mesin Cusi">Mesin Cuci</option>' +
+                    '<option value="Kulkas">Kulkas</option>' +
+                    '<option value="AC>AC</option>';
+                }
+                if(kategori == "Alat Tulis") {
+                    document.getElementById("sub").innerHTML =
+                    '<option value="">--Pilih Sub Kategori--</option>' +
+                    '<option value="Kertas">Kertas</option>' +
+                    '<option value="Map">Map</option>' +
+                    '<option value="Pulpen">Pulpen</option>';
+                }
+            }
+
+            // Fungsi Captcha
+            function generateCaptcha() {
+                let code = '';
+                for (let i = 0; i < 5; i++) {
+                    let randomCharCode = Math.floor(Math.random() * 26);
+                    let randomCase = Math.random() < 0.5 ? 65 : 97;
+                    let randomCharacter = String.fromCharCode(randomCase + randomCharCode)
+                    code += randomCharacter
+                }
+                document.forms["form_addProduk"]["captcha_text"].value = code;
+            }
+        </script>
+    </head>
+
+    <body onload="generateCaptcha()">
+        <h2>Form Tambah Data Produk</h2>
+        <form id="form_addProduk" method="GET" autocomplete="on" action=""
+        onsubmit="return validateForm()">
+        <table>
+            <!-- Nama Produk -->
+            <tr>
+                <td><label for="name">Nama Produk</label></td>
+                <td><input type="text" name="nama" id="nama" size="35"></td>
+            </tr>
+            <!-- Deskripsi -->
+            <tr>
+                <td>Deskripsi</td>
+                <td><textarea name="desc" rows="5" cols="37"></textarea></td>
+            </tr>
+            <!-- Kategori -->
+            <tr>
+                <td><label for="kategori">Kategori</label></td>
+                <td><select name="kategori" id="kategori" onchange="get_subKategori()">
+                    <option value="">--Pilih Kategori--</option>
+                    <option value="Baju">Baju</option>
+                    <option value="Elektronik">Elektronik</option>
+                    <option value="Alat Tulis">Alat Tulis</option></select>
+                </td>
+            </tr>
+            <!-- Sub Kategori -->
+            <tr>
+                <td><label for="sub">Sub Kategori</label></td>
+                <td><select name="sub" id="sub">
+                    <option value="">--Pilih Sub Kategori--</option></select>
+                </td>
+            </tr>
+            <!-- Harga Satuan -->
+            <tr>
+                <td><label for="hargaSatuan">Harga Satuan</label></td>
+                <td><input type="text" name="hargaSatuan" id="hargaSatuan" size="11"></td>
+            </tr>
+            <!-- Grosir -->
+            <tr>
+                <td>Grosir</td>
+                <td>
+                    <input type="radio" name="grosir" id="Ya" value="Ya">
+                    <label for="Ya">Ya</label><br>
+                    <input type="radio" name="grosir" id="Tidak" value="Tidak">
+                    <label for="Tidak">Tidak</label><br>
+                </td>
+            </tr>
+            <!-- Harga Grosir -->
+            <tr>
+                <td><label for="hargaGrosir">Harga Grosir</label></td>
+                <td><input type="text" name="hargaGrosir" id="hargaGrosir" size="11"></td>
+            </tr>
+            <!-- Jasa Kirim -->
+            <tr>
+                <td><label for="jasa">Jasa Kirim</label></td>
+                <td>
+                    <input type="checkbox" name="jasa[]" id="JNE" value="JNE">
+                    <label for="JNE">JNE</label><br>
+                    <input type="checkbox" name="jasa[]" id="TIKI" value="TIKI">
+                    <label for="TIKI">TIKI</label><br>
+                    <input type="checkbox" name="jasa[]" id="siCepat" value="siCepat">
+                    <label for="siCepat">siCepat</label><br>
+                    <input type="checkbox" name="jasa[]" id="ninja" value="ninja">
+                    <label for="ninja">Ninja Express</label><br>
+                    <input type="checkbox" name="jasa[]" id="wahana" value="wahana">
+                    <label for="wahana">Wahana</label>
+                </td>
+            </tr>
+            <!-- Captcha -->
+            <tr>
+                <td><label for="captcha">Captcha</label></td>
+                <td>
+                    <input type="text" name="captcha_text" size="11" disabled>
+                    <input type="text" name="captcha_input" id="captcha_input" size="11">
+                </td>
+            </tr>
+            <!-- Submit Reset -->
+            <tr>
+                <td colspan="2"><br>
+                    <input type="submit" name="submit" value="Submit">
+                    &nbsp;
+                    <input type="reset" name="reset" value="Reset">
+                </td>
+            </tr>
+        </table>
+        </form>
+    </body>
+</html>
